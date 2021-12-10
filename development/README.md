@@ -1,12 +1,14 @@
 ```
-stacks -I http://stacks-blockchain-api-http.localhost balance STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6
-```
-
-
-```
 curl -sL stacks-blockchain.localhost/v2/info | jq
 ```
 
+## Stacks
+
+install stacks
+
+```shell
+npm i -g @stacks/cli
+```
 
 ```shell
 stacks -i -I http://stacks-blockchain-api-http.localhost \
