@@ -1,0 +1,152 @@
+version: "3.7"
+services:
+  traefik:
+    image: traefik:v2.5
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.watch=true"
+      - "--providers.file.directory=/file-providers"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--entryPoints.tcppg.address=:5555"
+      - "--accesslog"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+      - "5555:5555"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./traefik:/traefik"
+      - "./file-providers:/file-providers"
+
+    labels:
+      - traefik.http.services.traefik-public.loadbalancer.server.port=80
+      - traefik.http.middlewares.whoami-redirectscheme.redirectscheme.scheme=https
+      - traefik.enable=true
+    networks:
+      - backend
+  whoami:
+    image: containous/whoami
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=development_backend
+      - traefik.http.routers.whoami.entrypoints=web,websecure
+      - traefik.http.routers.whoami.rule=Host(`whoami.localhost`)
+      - traefik.http.routers.whoami.tls=true
+      - traefik.http.services.whoami.loadbalancer.server.port=80
+    networks:
+      - backend
+  postgres:
+    image: "postgres:12.2"
+    ports:
+      - "5490:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: stacks_blockchain_api
+      POSTGRES_PORT: 5432
+    networks:
+      - backend
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=development_backend
+      - traefik.http.routers.postgres.entrypoints=tcppg
+      - traefik.http.routers.postgres.rule=Host(`pg.localhost`)
+      - traefik.http.services.postgres.loadbalancer.server.port=5432
+  stacks-blockchain:
+    image: blockstack/stacks-blockchain
+    command: stacks-node start --config=/app/config/Stacks-dev.toml
+    restart: on-failure
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=development_backend
+      - traefik.http.routers.stacks_blockchain.entrypoints=web,websecure
+      - traefik.http.routers.stacks_blockchain.rule=Host(`stacks-blockchain.localhost`)
+      - traefik.http.services.stacks_blockchain.loadbalancer.server.port=20443
+      - traefik.http.routers.stacks_blockchain.tls=true
+    environment:
+      STACKS_EVENT_OBSERVER: stacks-blockchain-api:3700
+      XBLOCKSTACK_DEBUG: 1
+      RUST_BACKTRACE: 1
+      STACKS_CHAIN_ID: "0x80000000"
+    ports:
+      - "20443:20443"
+      - "20444:20444"
+    volumes:
+      - ./stacks-blockchain/:/app/config
+      - ./stacks-blockchain/chaindata:/tmp/stacks-blockchain-data
+    networks:
+      - backend
+  stacks-blockchain-api:
+    image: blockstack/stacks-blockchain-api
+    restart: on-failure
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=development_backend
+      - traefik.http.services.stacks_blockchain_api.loadbalancer.server.port=3999
+      - traefik.http.routers.stacks_blockchain_api.entrypoints=web,websecure
+      - traefik.http.routers.stacks_blockchain_api.rule=Host(`stacks-blockchain-api.localhost`)
+      - traefik.http.routers.stacks_blockchain_api.service=stacks_blockchain_api
+      - traefik.http.routers.stacks_blockchain_api.tls=true
+      - traefik.http.services.stacks_blockchain_event.loadbalancer.server.port=9153
+      - traefik.http.routers.stacks_blockchain_event.entrypoints=web
+      - traefik.http.routers.stacks_blockchain_event.rule=Host(`stacks-blockchain-event.localhost`)
+      - traefik.http.routers.stacks_blockchain_event.service=stacks_blockchain_event
+      - traefik.http.routers.stacks_blockchain_event.tls=true
+    environment:
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+      PG_DATABASE: stacks_blockchain_api
+      STACKS_CORE_EVENT_PORT: 3700
+      STACKS_CORE_EVENT_HOST: http://0.0.0.0
+      STACKS_BLOCKCHAIN_API_PORT: 3999
+      STACKS_BLOCKCHAIN_API_HOST: 0.0.0.0
+      STACKS_BLOCKCHAIN_API_DB: pg
+      STACKS_CORE_RPC_HOST: stacks-blockchain
+      STACKS_CORE_RPC_PORT: 20443
+      STACKS_CHAIN_ID: "0x80000000"
+      NODE_ENV: development
+    ports:
+      - "3999:3999"
+      - "9153:9153"
+    volumes:
+      - ./stacks-blockchain/:/app/config
+    networks:
+      - backend
+    depends_on:
+      - postgres
+#  stacks-blockchain-explorer:
+#    image: blockstack/explorer
+#    labels:
+#      - traefik.enable=true
+#      - traefik.docker.network=development_backend
+#      - traefik.http.services.stacks_blockchain_explorer.loadbalancer.server.port=3000
+#      - traefik.http.routers.stacks_blockchain_explorer.entrypoints=web,websecure
+#      - traefik.http.routers.stacks_blockchain_explorer.rule=Host(`stacks-blockchain-explorer.localhost`)
+#      - traefik.http.routers.stacks_blockchain_explorer.tls=true
+#    ports:
+#      - "3300:3000"
+#    extra_hosts:
+#      - "stacks-blockchain-explorer.localhost:127.0.0.1"
+#    environment:
+##      TESTNET_API_SERVER: https://stacks-blockchain-api.localhost
+#      NEXT_PUBLIC_TESTNET_API_SERVER: https://stacks-blockchain-api.localhost
+##      NEXT_PUBLIC_MAINNET_API_SERVER: https://stacks-blockchain-api.localhost
+##      NEXT_PUBLIC_REGTEST_API_SERVER: https://stacks-blockchain-api.localhost
+#      NEXT_PUBLIC_DEPLOYMENT_URL: https://stacks-blockchain-explorer.localhost
+#      NEXT_PUBLIC_MAINNET_ENABLED: "true"
+#      NODE_ENV: development
+#    networks:
+#      - backend
+
+
+networks:
+  backend:

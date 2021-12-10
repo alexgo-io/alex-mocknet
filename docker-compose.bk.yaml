@@ -1,0 +1,34 @@
+version: 3
+services:
+ postgres:
+   image: postgres:12-alpine
+   volumes:
+     - ./persistent-compose-data/postgres:/var/lib/postgresql/data
+   ports:
+     - "5432:5432"
+   environment:
+     - POSTGRES_PASSWORD=postgres
+   restart: always
+ stacks-blockchain-api:
+   image: blockstack/stacks-blockchain-api
+   ports:
+     - "3700:3700"
+     - "3999:3999"
+   volumes:
+     - ./persistent-compose-data/blockchain-api:/bns-data
+   env_file:
+     - ./.env
+   restart: always
+ stacks-blockchain:
+   image: blockstack/stacks-blockchain
+   volumes:
+     - ./persistent-compose-data/stacks-blockchain:/root/stacks-node/data
+     - ./config:/src/stacks-node
+   ports:
+     - "20443:20443"
+     - "20444:20444"
+   command:
+     - /bin/stacks-node
+     - start
+     - --config
+     - /src/stacks-node/Config.toml
