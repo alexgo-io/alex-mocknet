@@ -1,12 +1,19 @@
 [node]
-name = "helium-node"
+working_dir = "/root/stacks-node/data"
 rpc_bind = "0.0.0.0:20443"
-# working_dir = "/tmp/stacks-blockchain-data"
+p2p_bind = "0.0.0.0:20444"
+wait_time_for_microblocks = 10000
+# use_test_genesis_chainstate = true
+
+[[events_observer]]
+endpoint = "stacks-blockchain-api:3700"
+retry_count = 255
+events_keys = ["*"]
 
 [burnchain]
 chain = "bitcoin"
 mode = "mocknet"
-commit_anchor_block_within = 1000
+commit_anchor_block_within = 15000
 
 [[mstx_balance]]
 address = "STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6"
@@ -27,3 +34,10 @@ amount = 10000000000000000
 address = "STRYYQQ9M8KAF4NS7WNZQYY59X93XEKR31JP64CP"
 amount = 10000000000000000
 # secretKey = "e75dcb66f84287eaf347955e94fa04337298dbd95aa0dbb985771104ef1913db01"
+
+[connection_options]
+read_only_call_limit_write_length = 15000000
+read_only_call_limit_read_length = 100000000
+read_only_call_limit_write_count = 7750
+read_only_call_limit_read_count = 7750
+read_only_call_limit_runtime = 5000000000

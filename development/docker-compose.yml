@@ -10,8 +10,8 @@ services:
       - "--providers.file.watch=true"
       - "--providers.file.directory=/file-providers"
       - "--entrypoints.web.address=:80"
-      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entrypoint.permanent=false"
+#      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+#      - "--entrypoints.web.http.redirections.entrypoint.permanent=false"
       - "--entrypoints.websecure.address=:443"
       - "--entryPoints.tcppg.address=:5555"
       - "--accesslog"
@@ -71,10 +71,21 @@ services:
       - traefik.http.services.stacks_blockchain.loadbalancer.server.port=20443
       - traefik.http.routers.stacks_blockchain.tls=true
     environment:
+      NOP_BLOCKSTACK_DEBUG: 1
       STACKS_EVENT_OBSERVER: stacks-blockchain-api:3700
       XBLOCKSTACK_DEBUG: 1
       RUST_BACKTRACE: 1
       STACKS_CHAIN_ID: "0x80000000"
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+      PG_DATABASE: postgres
+      V2_POX_MIN_AMOUNT_USTX: 90000000260
+      STACKS_CORE_RPC_HOST: stacks-blockchain
+      STACKS_CORE_RPC_PORT: 20443
+      STACKS_API_ENABLE_FT_METADATA: 1
+      STACKS_API_ENABLE_NFT_METADATA: 1
     ports:
       - "20443:20443"
       - "20444:20444"
@@ -94,6 +105,13 @@ services:
       - traefik.http.routers.stacks_blockchain_api.rule=Host(`stacks-blockchain-api.localhost`)
       - traefik.http.routers.stacks_blockchain_api.service=stacks_blockchain_api
       - traefik.http.routers.stacks_blockchain_api.tls=true
+
+      - traefik.http.services.stacks_blockchain_api_http.loadbalancer.server.port=3999
+      - traefik.http.routers.stacks_blockchain_api_http.entrypoints=web
+      - traefik.http.routers.stacks_blockchain_api_http.rule=Host(`stacks-blockchain-api-http.localhost`)
+      - traefik.http.routers.stacks_blockchain_api_http.service=stacks_blockchain_api
+      - traefik.http.routers.stacks_blockchain_api.tls=false
+
       - traefik.http.services.stacks_blockchain_event.loadbalancer.server.port=9153
       - traefik.http.routers.stacks_blockchain_event.entrypoints=web
       - traefik.http.routers.stacks_blockchain_event.rule=Host(`stacks-blockchain-event.localhost`)
@@ -105,13 +123,13 @@ services:
       PG_USER: postgres
       PG_PASSWORD: postgres
       PG_DATABASE: stacks_blockchain_api
-      STACKS_CORE_EVENT_PORT: 3700
+      STACKS_CORE_EVENT_PORT: "3700"
       STACKS_CORE_EVENT_HOST: http://0.0.0.0
-      STACKS_BLOCKCHAIN_API_PORT: 3999
+      STACKS_BLOCKCHAIN_API_PORT: "3999"
       STACKS_BLOCKCHAIN_API_HOST: 0.0.0.0
       STACKS_BLOCKCHAIN_API_DB: pg
       STACKS_CORE_RPC_HOST: stacks-blockchain
-      STACKS_CORE_RPC_PORT: 20443
+      STACKS_CORE_RPC_PORT: "20443"
       STACKS_CHAIN_ID: "0x80000000"
       NODE_ENV: development
     ports:
