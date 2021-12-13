@@ -2,8 +2,8 @@
 working_dir = "/root/stacks-node/data"
 rpc_bind = "0.0.0.0:20443"
 p2p_bind = "0.0.0.0:20444"
-wait_time_for_microblocks = 10000
-# use_test_genesis_chainstate = true
+wait_time_for_microblocks = 1000
+use_test_genesis_chainstate = true
 
 [[events_observer]]
 endpoint = "stacks-blockchain-api:3700"
@@ -13,7 +13,7 @@ events_keys = ["*"]
 [burnchain]
 chain = "bitcoin"
 mode = "mocknet"
-commit_anchor_block_within = 15000
+commit_anchor_block_within = 2000
 
 [[mstx_balance]]
 address = "STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6"

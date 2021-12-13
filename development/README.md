@@ -10,6 +10,11 @@ install stacks
 npm i -g @stacks/cli
 ```
 
+use cert in node
+```shell
+export NODE_EXTRA_CA_CERTS="$(mkcert -CAROOT)/rootCA.pem"
+```
+
 ```shell
 stacks -i -I http://stacks-blockchain-api-http.localhost \
      send_tokens \
