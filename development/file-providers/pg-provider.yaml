@@ -1,0 +1,12 @@
+tcp:
+  routers:
+    to-pg-svc:
+      entryPoints:
+        - "tcppg"
+      rule: "HostSNI(`*`)"
+      service: pg-svc
+  services:
+    pg-svc:
+      loadBalancer:
+        servers:
+          - address: "postgres:5432"
