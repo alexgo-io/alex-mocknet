@@ -2,19 +2,23 @@ version: "3.7"
 services:
   postgres:
     image: "postgres:12.2"
-    shm_size: 2gb
     ports:
-      - "5490:5432"
+      - "5439:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: stacks_blockchain_api
       POSTGRES_PORT: 5432
+    volumes:
+      - "./stacks-blockchain-api/postgres:/var/lib/postgresql/data"
     networks:
       - backend
+
   stacks-blockchain:
-    image: blockstack/stacks-blockchain:2.05.0.1.0
-    command: sh -c "/wait && stacks-node start --config=/app/config/Stacks.toml"
+    build:
+      context: "./stacks-blockchain/docker"
+      dockerfile: Dockerfile
+    restart: on-failure
     environment:
       WAIT_BEFORE: 3
       WAIT_AFTER: 3
@@ -39,13 +43,17 @@ services:
       - "20444:20444"
     volumes:
       - ./stacks-blockchain/config:/app/config
-      - ./stacks-blockchain/chaindata:/tmp/stacks-blockchain-data
-      - ./docker/wait:/wait
+      - ./stacks-blockchain/data:/root/stacks-node/data
     networks:
       - backend
+
   stacks-blockchain-api:
-    image: blockstack/stacks-blockchain-api:2.1.1
+    build:
+      context: "./stacks-blockchain-api/docker"
+      dockerfile: Dockerfile
     restart: on-failure
+    networks:
+      - backend
     environment:
       WAIT_HOSTS: "postgres:5432"
       PG_HOST: postgres
@@ -65,37 +73,5 @@ services:
     ports:
       - "3999:3999"
       - "9153:9153"
-    volumes:
-      - ./docker/wait:/wait
-
-    networks:
-      - backend
-    depends_on:
-      - postgres
-#  stacks-blockchain-explorer:
-#    image: blockstack/explorer
-#    labels:
-#      - traefik.enable=true
-#      - traefik.docker.network=development_backend
-#      - traefik.http.services.stacks_blockchain_explorer.loadbalancer.server.port=3000
-#      - traefik.http.routers.stacks_blockchain_explorer.entrypoints=web,websecure
-#      - traefik.http.routers.stacks_blockchain_explorer.rule=Host(`stacks-blockchain-explorer.localhost`)
-#      - traefik.http.routers.stacks_blockchain_explorer.tls=true
-#    ports:
-#      - "3300:3000"
-#    extra_hosts:
-#      - "stacks-blockchain-explorer.localhost:127.0.0.1"
-#    environment:
-##      TESTNET_API_SERVER: https://stacks-blockchain-api.localhost
-#      NEXT_PUBLIC_TESTNET_API_SERVER: https://stacks-blockchain-api.localhost
-##      NEXT_PUBLIC_MAINNET_API_SERVER: https://stacks-blockchain-api.localhost
-##      NEXT_PUBLIC_REGTEST_API_SERVER: https://stacks-blockchain-api.localhost
-#      NEXT_PUBLIC_DEPLOYMENT_URL: https://stacks-blockchain-explorer.localhost
-#      NEXT_PUBLIC_MAINNET_ENABLED: "true"
-#      NODE_ENV: development
-#    networks:
-#      - backend
-
-
 networks:
   backend:
