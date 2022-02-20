@@ -72,29 +72,22 @@ services:
       - backend
     depends_on:
       - postgres
-#  stacks-blockchain-explorer:
-#    image: blockstack/explorer
-#    labels:
-#      - traefik.enable=true
-#      - traefik.docker.network=development_backend
-#      - traefik.http.services.stacks_blockchain_explorer.loadbalancer.server.port=3000
-#      - traefik.http.routers.stacks_blockchain_explorer.entrypoints=web,websecure
-#      - traefik.http.routers.stacks_blockchain_explorer.rule=Host(`stacks-blockchain-explorer.localhost`)
-#      - traefik.http.routers.stacks_blockchain_explorer.tls=true
-#    ports:
-#      - "3300:3000"
-#    extra_hosts:
-#      - "stacks-blockchain-explorer.localhost:127.0.0.1"
-#    environment:
-##      TESTNET_API_SERVER: https://stacks-blockchain-api.localhost
-#      NEXT_PUBLIC_TESTNET_API_SERVER: https://stacks-blockchain-api.localhost
-##      NEXT_PUBLIC_MAINNET_API_SERVER: https://stacks-blockchain-api.localhost
-##      NEXT_PUBLIC_REGTEST_API_SERVER: https://stacks-blockchain-api.localhost
-#      NEXT_PUBLIC_DEPLOYMENT_URL: https://stacks-blockchain-explorer.localhost
-#      NEXT_PUBLIC_MAINNET_ENABLED: "true"
-#      NODE_ENV: development
-#    networks:
-#      - backend
+  stacks-blockchain-explorer:
+    image: blockstack/explorer
+    ports:
+      - "3300:3000"
+    extra_hosts:
+      - "stacks-blockchain-explorer.localhost:127.0.0.1"
+    environment:
+      TESTNET_API_SERVER: http://gateway.docker.internal:3999
+      NEXT_PUBLIC_TESTNET_API_SERVER: http://gateway.docker.internal:3999
+      NEXT_PUBLIC_MAINNET_API_SERVER: http://gateway.docker.internal:3999
+      NEXT_PUBLIC_REGTEST_API_SERVER: http://gateway.docker.internal:3999
+      NEXT_PUBLIC_DEPLOYMENT_URL: http://127.0.0.1:3999
+      NEXT_PUBLIC_MAINNET_ENABLED: "true"
+      NODE_ENV: development
+    networks:
+      - backend
 
 
 networks:
