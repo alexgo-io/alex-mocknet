@@ -13,7 +13,7 @@ events_keys = ["*"]
 [burnchain]
 chain = "bitcoin"
 mode = "mocknet"
-commit_anchor_block_within = 10000
+commit_anchor_block_within = 5000
 
 [[mstx_balance]]
 address = "STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6"
@@ -34,6 +34,75 @@ amount = 10000000000000000
 address = "STRYYQQ9M8KAF4NS7WNZQYY59X93XEKR31JP64CP"
 amount = 10000000000000000
 # secretKey = "e75dcb66f84287eaf347955e94fa04337298dbd95aa0dbb985771104ef1913db01"
+
+[[mstx_balance]]
+address = "ST1HTBVD3JG9C05J7HBJTHGR0GGW7KXW28M5JS8QE"
+amount = 10000000000000000
+# secret_key: 753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601
+
+# ---------------------------
+[[mstx_balance]]
+address = "ST2QXSK64YQX3CQPC530K79XWQ98XFAM9W3XKEH3N"
+amount = 100_000_000_000_000
+#phrase: "pulp when detect fun unaware reduce promote tank success lecture cool cheese object amazing hunt plug wing month hello tunnel detect connect floor brush",
+#private: "75a92e94697d7becd7020db449227d174802ff28aac29f3999e2aac4baf6498f01",
+
+
+[[mstx_balance]]
+address = "ST1J4G6RR643BCG8G8SR6M2D9Z9KXT2NJDRK3FBTK"
+amount = 100_000_000_000_000
+#phrase: "spoil sock coyote include verify comic jacket gain beauty tank flush victory illness edge reveal shallow plug hobby usual juice harsh pact wreck eight",
+#private: "33ef2367ca0e02ba65531af2a21cf5926600bc4f950f7b34fc55ea0f893418c301",
+
+
+[[mstx_balance]]
+address = "ST3DG3R65C9TTEEW5BC5XTSY0M1JM7NBE7GVWKTVJ"
+amount = 100_000_000_000_000
+#phrase: "replace swing shove congress smoke banana tired term blanket nominee leave club myself swing egg virus answer bulk useful start decrease family energy february",
+#private: "1305b6cadf33e6db189e9e82f3bb1d4374f5c5619eaf79f01c59faf230689a3c01",
+
+
+[[mstx_balance]]
+address = "STEB8ZW46YZJ40E3P7A287RBJFWPHYNQ2AB5ECT8"
+amount = 100_000_000_000_000
+#phrase: "east load echo merit ignore hip tag obvious truly adjust smart panther deer aisle north hotel process frown lock property catch bless notice topple",
+#private: "b3c01bfa64d44caffcc02466e6d58effe9e1470a4e760984dcded5b1117f4a9101",
+
+
+[[mstx_balance]]
+address = "STFCVYY1RJDNJHST7RRTPACYHVJQDJ7R1DWTQHQA"
+amount = 100_000_000_000_000
+#phrase: "market ocean tortoise venue vivid coach machine category conduct enable insect jump fog file test core book chaos crucial burst version curious prosper fever",
+#private: "6682d7f7cc8aa560a1baaf320b9771d9ca33abdf4ad2a768ce2b3573a2151e9b01",
+
+
+[[mstx_balance]]
+address = "ST20ATRN26N9P05V2F1RHFRV24X8C8M3W54E427B2"
+amount = 100_000_000_000_000
+#phrase: "arrange scale orient half ugly kid bike twin magnet joke hurt fiber ethics super receive version wreck media fluid much abstract reward street alter",
+#private: "a8d75b0fab120c53ab0f6700378c52391863c8e197b3ff220de156ea46cdd58601",
+
+
+[[mstx_balance]]
+address = "ST3R3B1WVY7RK5D3SV5YTH01XSX1S4NN5B3QK2X0W"
+amount = 100_000_000_000_000
+#phrase: "apology together shy taxi glare struggle hip camp engage lion possible during squeeze hen exotic marriage misery kiwi once quiz enough exhibit immense tooth",
+#private: "54c97ce72f11eff209614af29352d52f00eb425aec5a96cd1e9e829094a68a9301",
+
+
+[[mstx_balance]]
+address = "ST3ZG8F9X4VKVTVQB2APF4NEYEE1HQHC2EDBF09JN"
+amount = 100_000_000_000_000
+#phrase: "antenna bitter find rely gadget father exact excuse cross easy elbow alcohol injury loud silk bird crime cabbage winter fit wide screen update october",
+#private: "f20ef26a7549d8d6863a52f4354b9855d0f27474a9733a4b5c5a5194471a7edb01",
+
+
+[[mstx_balance]]
+address = "ST21HMSJATHZ888PD0S0SSTWP4J61TCRJYEVQ0STB"
+amount = 100_000_000_000_000
+#phrase: "glide clown kitchen picnic basket hidden asset beyond kid plug carbon talent drama wet pet rhythm hero nest purity baby bicycle ghost sponsor dragon",
+#private: "e5dfc0528a2fc6ef0d8f8e9144b2abfec96c1ca62af7402259ab8d4cf18d132901",
+
 
 [connection_options]
 read_only_call_limit_write_length = 15000000
