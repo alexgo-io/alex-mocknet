@@ -92,8 +92,14 @@ services:
     image: "us-central1-docker.pkg.dev/fifth-compiler-334213/alexgo/alex-stacks-loader:v20220125-068bbbf4"
     environment:
       PG_CONNECTION_STRING: "postgresql://postgres:postgres@postgres:5432/stacks_blockchain_api"
+      WAIT_BEFORE: 3
+      WAIT_AFTER: 3
+      WAIT_HOSTS: "stacks-blockchain-api:3700"
     networks:
       - backend
+    volumes:
+      - ./docker/wait:/wait
+    command: sh -c "/wait && node /srv/main.js"
 
 networks:
   backend:
