@@ -1,2 +1,4 @@
 persistent-data
 test-connections
+/unit-tests/
+.env
